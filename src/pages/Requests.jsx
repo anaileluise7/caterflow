@@ -118,6 +118,11 @@ export default function Requests() {
                 Table view
               </Button>
             </Link>
+            <Link to="/staff">
+              <Button variant="outline" size="sm" className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white">
+                <Users className="w-3.5 h-3.5 mr-1.5" /> Staff
+              </Button>
+            </Link>
             <Button variant="outline" size="sm" onClick={load} className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white">
               <RefreshCw className="w-3.5 h-3.5" />
             </Button>

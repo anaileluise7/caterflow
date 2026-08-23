@@ -1,0 +1,40 @@
+{
+  "name": "Staff",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Name"
+    },
+    "role": {
+      "type": "string",
+      "title": "Role"
+    },
+    "email": {
+      "type": "string",
+      "format": "email",
+      "title": "Email"
+    },
+    "phone": {
+      "type": "string",
+      "title": "Phone"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Active",
+        "On Leave",
+        "Inactive"
+      ],
+      "default": "Active",
+      "title": "Status"
+    },
+    "notes": {
+      "type": "string",
+      "title": "Notes"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

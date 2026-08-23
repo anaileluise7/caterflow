@@ -13,6 +13,7 @@ import Requests from './pages/Requests';
 import Templates from './pages/Templates';
 import Finance from './pages/Finance';
 import Invoices from './pages/Invoices';
+import Staff from './pages/Staff';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -47,6 +48,7 @@ const AuthenticatedApp = () => {
       <Route path="/templates" element={<Templates />} />
       <Route path="/finance" element={<Finance />} />
       <Route path="/invoices" element={<Invoices />} />
+      <Route path="/staff" element={<Staff />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

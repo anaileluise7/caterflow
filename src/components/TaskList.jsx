@@ -34,8 +34,8 @@ export default function TaskList({ inquiry }) {
 
   const loadMembers = async () => {
     try {
-      const users = await base44.entities.User.list();
-      setMembers(users);
+      const list = await base44.entities.Staff.list("-created_date", 200);
+      setMembers(list);
     } catch (err) { console.error(err); }
   };
 
@@ -79,7 +79,7 @@ export default function TaskList({ inquiry }) {
     } catch (err) { console.error(err); }
   };
 
-  const memberLabel = (u) => u.full_name || u.email;
+  const memberLabel = (m) => m.name;
 
   return (
     <div>
