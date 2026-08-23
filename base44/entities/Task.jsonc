@@ -1,0 +1,37 @@
+{
+  "name": "Task",
+  "type": "object",
+  "properties": {
+    "inquiry_id": {
+      "type": "string",
+      "title": "Inquiry ID"
+    },
+    "title": {
+      "type": "string",
+      "title": "Duty"
+    },
+    "assignee": {
+      "type": "string",
+      "title": "Assignee"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "To Do",
+        "In Progress",
+        "Done"
+      ],
+      "default": "To Do",
+      "title": "Status"
+    },
+    "due_date": {
+      "type": "string",
+      "format": "date",
+      "title": "Due Date"
+    }
+  },
+  "required": [
+    "inquiry_id",
+    "title"
+  ]
+}

@@ -12,6 +12,7 @@ import { StatusBadge } from "@/components/StatusBadge";
 import ActivityLog from "@/components/ActivityLog";
 import EmailComposer from "@/components/EmailComposer";
 import EquipmentChecklist from "@/components/EquipmentChecklist";
+import TaskList from "@/components/TaskList";
 import { PIPELINE_STATUSES } from "@/lib/pipeline";
 
 const STATUSES = PIPELINE_STATUSES;
@@ -165,6 +166,9 @@ export default function InquiryDetail({ inquiry, onClose, onUpdated }) {
 
           {/* Equipment checklist */}
           <EquipmentChecklist inquiry={inquiry} onUpdated={onUpdated} />
+
+          {/* Team tasks */}
+          <TaskList inquiry={inquiry} />
 
           {/* Proposal */}
           <div>
