@@ -1,0 +1,78 @@
+{
+  "name": "CateringInquiry",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Full Name"
+    },
+    "email": {
+      "type": "string",
+      "title": "Email",
+      "format": "email"
+    },
+    "phone": {
+      "type": "string",
+      "title": "Phone"
+    },
+    "event_date": {
+      "type": "string",
+      "format": "date",
+      "title": "Event Date"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "Wedding",
+        "Corporate",
+        "Birthday",
+        "Private Dinner",
+        "Cocktail Reception",
+        "Other"
+      ],
+      "title": "Event Type"
+    },
+    "guest_count": {
+      "type": "number",
+      "title": "Guest Count"
+    },
+    "venue": {
+      "type": "string",
+      "title": "Venue / Location"
+    },
+    "budget_per_head": {
+      "type": "string",
+      "title": "Budget Per Head"
+    },
+    "dietary_requirements": {
+      "type": "string",
+      "title": "Dietary Requirements"
+    },
+    "additional_notes": {
+      "type": "string",
+      "title": "Additional Notes"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "New",
+        "Quoted",
+        "Tasting Booked",
+        "Confirmed",
+        "Declined"
+      ],
+      "default": "New",
+      "title": "Status"
+    },
+    "proposal": {
+      "type": "string",
+      "title": "Generated Proposal"
+    }
+  },
+  "required": [
+    "name",
+    "event_date",
+    "event_type",
+    "guest_count"
+  ]
+}
