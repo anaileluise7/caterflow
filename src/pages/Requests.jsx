@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Loader2, Search, RefreshCw, UtensilsCrossed, Inbox, Calendar, Users, X } from "lucide-react";
+import { Loader2, Search, RefreshCw, UtensilsCrossed, Inbox, Calendar, Users, X, CheckCircle2, XCircle } from "lucide-react";
 import { StatusBadge } from "@/components/StatusBadge";
 import InquiryDetail from "@/components/InquiryDetail";
 import { Link } from "react-router-dom";
@@ -29,6 +29,7 @@ export default function Requests() {
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [selected, setSelected] = useState(null);
+  const [checked, setChecked] = useState(new Set());
 
   const load = async () => {
     setLoading(true);
@@ -68,6 +69,33 @@ export default function Requests() {
   const handleUpdated = (updated) => {
     setInquiries(list => list.map(i => i.id === updated.id ? updated : i));
     setSelected(updated);
+  };
+
+  const allChecked = filtered.length > 0 && filtered.every(i => checked.has(i.id));
+  const toggleCheck = (id) => {
+    setChecked(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+  const toggleAll = () => {
+    setChecked(prev => {
+      const next = new Set(prev);
+      if (filtered.every(i => next.has(i.id))) {
+        filtered.forEach(i => next.delete(i.id));
+      } else {
+        filtered.forEach(i => next.add(i.id));
+      }
+      return next;
+    });
+  };
+  const bulkUpdateStatus = async (newStatus) => {
+    try {
+      await base44.entities.CateringInquiry.bulkUpdate([...checked].map(id => ({ id, status: newStatus })));
+      setChecked(new Set());
+      load();
+    } catch (err) { console.error(err); }
   };
 
   return (
@@ -134,9 +162,30 @@ export default function Requests() {
           </div>
         </div>
 
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
+          <label className="flex items-center gap-2 text-sm text-zinc-400 cursor-pointer select-none">
+            <input type="checkbox" checked={allChecked} onChange={toggleAll} className="w-4 h-4 rounded accent-amber-500 cursor-pointer" />
+            Select all
+          </label>
           <p className="text-sm text-zinc-500">{filtered.length} {filtered.length === 1 ? "request" : "requests"}</p>
         </div>
+
+        {checked.size > 0 && (
+          <div className="flex flex-wrap items-center gap-3 mb-4 rounded-xl border border-amber-500/40 bg-amber-500/10 p-3">
+            <span className="text-sm font-medium text-amber-200">{checked.size} selected</span>
+            <div className="flex flex-wrap items-center gap-2 ml-auto">
+              <Button size="sm" onClick={() => bulkUpdateStatus("Confirmed")} className="bg-emerald-600 hover:bg-emerald-500 text-white">
+                <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" /> Confirm all
+              </Button>
+              <Button size="sm" onClick={() => bulkUpdateStatus("Declined")} className="bg-rose-600 hover:bg-rose-500 text-white">
+                <XCircle className="w-3.5 h-3.5 mr-1.5" /> Decline all
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => setChecked(new Set())} className="text-zinc-400 hover:text-white hover:bg-zinc-800">
+                Clear
+              </Button>
+            </div>
+          </div>
+        )}
 
         {/* Cards */}
         {loading ? (
@@ -151,30 +200,34 @@ export default function Requests() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {filtered.map(i => (
-              <button
+              <div
                 key={i.id}
-                onClick={() => setSelected(i)}
-                className="text-left rounded-xl border border-zinc-800 bg-zinc-900 p-5 hover:border-amber-500/40 hover:bg-zinc-800/60 transition group"
+                className={`rounded-xl border bg-zinc-900 p-5 transition group flex flex-col ${checked.has(i.id) ? "border-amber-500/60 ring-1 ring-amber-500/30" : "border-zinc-800 hover:border-amber-500/40 hover:bg-zinc-800/60"}`}
               >
                 <div className="flex items-start justify-between gap-3 mb-3">
-                  <h3 className="font-semibold text-zinc-100 group-hover:text-white truncate">{i.name}</h3>
+                  <label className="flex items-center gap-2.5 cursor-pointer min-w-0" onClick={e => e.stopPropagation()}>
+                    <input type="checkbox" checked={checked.has(i.id)} onChange={() => toggleCheck(i.id)} className="w-4 h-4 rounded accent-amber-500 cursor-pointer shrink-0" />
+                    <h3 className="font-semibold text-zinc-100 group-hover:text-white truncate">{i.name}</h3>
+                  </label>
                   <StatusBadge status={i.status} />
                 </div>
-                <div className="space-y-2 text-sm text-zinc-400">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-3.5 h-3.5 text-zinc-600" />
-                    {fmtDate(i.event_date)}
+                <button onClick={() => setSelected(i)} className="block text-left flex-1">
+                  <div className="space-y-2 text-sm text-zinc-400">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-3.5 h-3.5 text-zinc-600" />
+                      {fmtDate(i.event_date)}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <UtensilsCrossed className="w-3.5 h-3.5 text-zinc-600" />
+                      {i.event_type}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Users className="w-3.5 h-3.5 text-zinc-600" />
+                      {i.guest_count} guests
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <UtensilsCrossed className="w-3.5 h-3.5 text-zinc-600" />
-                    {i.event_type}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Users className="w-3.5 h-3.5 text-zinc-600" />
-                    {i.guest_count} guests
-                  </div>
-                </div>
-              </button>
+                </button>
+              </div>
             ))}
           </div>
         )}
