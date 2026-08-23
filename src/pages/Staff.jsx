@@ -10,7 +10,7 @@ import {
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose,
 } from "@/components/ui/dialog";
-import { Loader2, Plus, Pencil, Trash2, RefreshCw, Users, Mail, Phone, Briefcase, UtensilsCrossed } from "lucide-react";
+import { Loader2, Plus, Pencil, Trash2, RefreshCw, Users, Mail, Phone, Briefcase, UtensilsCrossed, ListTodo, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const STATUSES = ["Active", "On Leave", "Inactive"];
@@ -22,6 +22,18 @@ const STATUS_STYLES = {
 
 const EMPTY = { name: "", role: "", email: "", phone: "", status: "Active", notes: "" };
 
+function fmtDate(d) {
+  if (!d) return "—";
+  try { return new Date(d).toLocaleDateString("en-GB", { day: "numeric", month: "short" }); }
+  catch { return d; }
+}
+
+function isOverdue(d) {
+  if (!d) return false;
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  return new Date(d + "T00:00:00") < today;
+}
+
 export default function Staff() {
   const [staff, setStaff] = useState([]);
   const [tasks, setTasks] = useState([]);
@@ -30,16 +42,20 @@ export default function Staff() {
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(EMPTY);
   const [saving, setSaving] = useState(false);
+  const [view, setView] = useState("directory");
+  const [inquiries, setInquiries] = useState([]);
 
   const load = async () => {
     setLoading(true);
     try {
-      const [s, t] = await Promise.all([
+      const [s, t, i] = await Promise.all([
         base44.entities.Staff.list("-created_date", 200),
         base44.entities.Task.list("-created_date", 500),
+        base44.entities.CateringInquiry.list("-created_date", 500),
       ]);
       setStaff(s);
       setTasks(t);
+      setInquiries(i);
     } catch (err) { console.error(err); }
     finally { setLoading(false); }
   };
@@ -58,6 +74,12 @@ export default function Staff() {
     }
     return c;
   }, [tasks]);
+
+  const inquiryMap = useMemo(() => {
+    const m = {};
+    for (const i of inquiries) m[i.id] = i;
+    return m;
+  }, [inquiries]);
 
   const openAdd = () => { setEditing(null); setForm(EMPTY); setOpen(true); };
   const openEdit = (m) => { setEditing(m); setForm({ ...EMPTY, ...m }); setOpen(true); };
@@ -99,6 +121,10 @@ export default function Staff() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <div className="flex rounded-lg border border-zinc-800 bg-zinc-900 p-0.5">
+              <button onClick={() => setView("directory")} className={`px-2.5 py-1 rounded-md text-xs font-medium transition ${view === "directory" ? "bg-zinc-800 text-white" : "text-zinc-400 hover:text-zinc-200"}`}>Directory</button>
+              <button onClick={() => setView("tasks")} className={`px-2.5 py-1 rounded-md text-xs font-medium transition ${view === "tasks" ? "bg-zinc-800 text-white" : "text-zinc-400 hover:text-zinc-200"}`}>Tasks</button>
+            </div>
             <Link to="/dashboard">
               <Button variant="outline" size="sm" className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white">Dashboard</Button>
             </Link>
@@ -122,6 +148,48 @@ export default function Staff() {
             <Button size="sm" onClick={openAdd} className="bg-amber-500 text-zinc-950 hover:bg-amber-400">
               <Plus className="w-3.5 h-3.5 mr-1" /> Add member
             </Button>
+          </div>
+        ) : view === "tasks" ? (
+          <div className="space-y-5">
+            {staff.map(m => {
+              const pending = tasks
+                .filter(t => t.assignee === m.name && t.status !== "Done")
+                .sort((a, b) => (a.due_date || "9999").localeCompare(b.due_date || "9999"));
+              return (
+                <div key={m.id} className="rounded-xl border border-zinc-800 bg-zinc-900 p-5">
+                  <div className="flex items-center justify-between gap-3 mb-3">
+                    <div className="min-w-0">
+                      <h3 className="font-semibold text-zinc-100 truncate">{m.name}</h3>
+                      <p className="text-xs text-zinc-500">{m.role || "—"}</p>
+                    </div>
+                    <span className="text-xs text-zinc-400 whitespace-nowrap">{pending.length} pending</span>
+                  </div>
+                  {pending.length === 0 ? (
+                    <p className="text-sm text-zinc-500 italic flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> No pending duties</p>
+                  ) : (
+                    <ul className="space-y-2">
+                      {pending.map(t => {
+                        const inq = inquiryMap[t.inquiry_id];
+                        const overdue = isOverdue(t.due_date);
+                        return (
+                          <li key={t.id} className="flex items-start gap-3 rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-2.5">
+                            <span className={`mt-1.5 w-2 h-2 rounded-full shrink-0 ${t.status === "In Progress" ? "bg-amber-400" : "bg-zinc-500"}`} />
+                            <div className="flex-1 min-w-0">
+                              <div className="text-sm text-zinc-100">{t.title}</div>
+                              <div className="text-xs text-zinc-500 flex flex-wrap gap-x-2 gap-y-0.5">
+                                {inq && <span className="truncate">{inq.name} · {fmtDate(inq.event_date)}</span>}
+                                {t.due_date && <span className={overdue ? "text-rose-400" : ""}>due {fmtDate(t.due_date)}{overdue ? " · overdue" : ""}</span>}
+                                <span>{t.status}</span>
+                              </div>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
+                </div>
+              );
+            })}
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
