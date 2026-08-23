@@ -15,6 +15,7 @@ import TaskList from "@/components/TaskList";
 import PaymentTracker from "@/components/PaymentTracker";
 import InvoicePanel from "@/components/InvoicePanel";
 import FollowUpReminder from "@/components/FollowUpReminder";
+import FeedbackSection from "@/components/FeedbackSection";
 import { PIPELINE_STATUSES } from "@/lib/pipeline";
 
 const STATUSES = PIPELINE_STATUSES;
@@ -138,6 +139,9 @@ export default function InquiryDetail({ inquiry, onClose, onUpdated }) {
               <Field icon={StickyNote} label="Additional Notes" value={inquiry.additional_notes} />
             </div>
           </div>
+
+          {/* Client feedback */}
+          <FeedbackSection inquiry={inquiry} onUpdated={onUpdated} />
 
           {/* Follow-up reminder */}
           <FollowUpReminder inquiry={inquiry} onUpdated={onUpdated} />

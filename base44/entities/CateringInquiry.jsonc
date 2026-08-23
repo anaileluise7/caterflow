@@ -52,6 +52,14 @@
       "type": "string",
       "title": "Additional Notes"
     },
+    "tasting_notes": {
+      "type": "string",
+      "title": "Tasting Notes"
+    },
+    "special_requests": {
+      "type": "string",
+      "title": "Special Client Requests"
+    },
     "lead_source": {
       "type": "string",
       "enum": [
