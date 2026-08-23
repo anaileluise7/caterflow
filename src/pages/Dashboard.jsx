@@ -8,6 +8,7 @@ import { Loader2, ArrowUp, ArrowDown, ArrowUpDown, RefreshCw, UtensilsCrossed, I
 import { Link } from "react-router-dom";
 import CalendarView from "@/components/CalendarView";
 import KanbanView from "@/components/KanbanView";
+import RevenueSummary from "@/components/RevenueSummary";
 import { StatusBadge } from "@/components/StatusBadge";
 import InquiryDetail from "@/components/InquiryDetail";
 
@@ -187,6 +188,8 @@ export default function Dashboard() {
             </button>
           ))}
         </div>
+
+        <RevenueSummary inquiries={inquiries} />
 
         {view === "list" && (
         <div className="flex items-center justify-between gap-4 mb-4">
