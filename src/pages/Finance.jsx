@@ -7,6 +7,7 @@ import {
 } from "recharts";
 import { ArrowLeft, Loader2, TrendingUp, Wallet, Scale, RefreshCw, PieChart as PieIcon } from "lucide-react";
 import { fmtMoney, asDate, monthKey, monthLabel, inquiryValue, CONFIRMED_STATUSES } from "@/lib/finance";
+import OutstandingPayments from "@/components/OutstandingPayments";
 
 const EVENT_COLORS = ["hsl(12 76% 61%)", "hsl(173 58% 45%)", "hsl(197 37% 50%)", "hsl(43 74% 60%)", "hsl(280 60% 65%)", "hsl(340 75% 60%)"];
 
@@ -151,6 +152,8 @@ export default function Finance() {
                 )}
               </div>
             </div>
+
+            <OutstandingPayments inquiries={inquiries} />
           </>
         )}
       </main>

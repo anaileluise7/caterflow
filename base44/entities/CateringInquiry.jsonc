@@ -78,6 +78,38 @@
       },
       "default": [],
       "title": "Equipment Checklist"
+    },
+    "total_quoted": {
+      "type": "number",
+      "title": "Total Quoted Amount"
+    },
+    "deposit_amount": {
+      "type": "number",
+      "title": "Deposit Amount"
+    },
+    "deposit_due_date": {
+      "type": "string",
+      "format": "date",
+      "title": "Deposit Due Date"
+    },
+    "deposit_paid": {
+      "type": "boolean",
+      "default": false,
+      "title": "Deposit Paid"
+    },
+    "balance_amount": {
+      "type": "number",
+      "title": "Balance Amount"
+    },
+    "balance_due_date": {
+      "type": "string",
+      "format": "date",
+      "title": "Balance Due Date"
+    },
+    "balance_paid": {
+      "type": "boolean",
+      "default": false,
+      "title": "Balance Paid"
     }
   },
   "required": [

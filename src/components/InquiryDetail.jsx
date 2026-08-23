@@ -13,6 +13,7 @@ import ActivityLog from "@/components/ActivityLog";
 import EmailComposer from "@/components/EmailComposer";
 import EquipmentChecklist from "@/components/EquipmentChecklist";
 import TaskList from "@/components/TaskList";
+import PaymentTracker from "@/components/PaymentTracker";
 import { PIPELINE_STATUSES } from "@/lib/pipeline";
 
 const STATUSES = PIPELINE_STATUSES;
@@ -248,6 +249,9 @@ export default function InquiryDetail({ inquiry, onClose, onUpdated }) {
             {invoiceError && <div className="text-sm text-rose-400 mt-2">{invoiceError}</div>}
             {!inquiry.proposal && <p className="text-xs text-zinc-500 mt-2">Generate a proposal first to create an invoice.</p>}
           </div>
+
+          {/* Payment tracking */}
+          <PaymentTracker inquiry={inquiry} onUpdated={onUpdated} />
 
           {/* Activity log */}
           <ActivityLog inquiryId={inquiry.id} />
