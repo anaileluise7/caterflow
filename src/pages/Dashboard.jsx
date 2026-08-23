@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Loader2, ArrowUp, ArrowDown, ArrowUpDown, RefreshCw, UtensilsCrossed, Inbox, LayoutGrid, CalendarDays, List, Trash2, LayoutDashboard } from "lucide-react";
+import { Loader2, ArrowUp, ArrowDown, ArrowUpDown, RefreshCw, UtensilsCrossed, Inbox, LayoutGrid, CalendarDays, List, Trash2, LayoutDashboard, Sheet, ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 import CalendarView from "@/components/CalendarView";
 import KanbanView from "@/components/KanbanView";
@@ -123,6 +123,56 @@ export default function Dashboard() {
     } catch (err) { console.error(err); }
   };
 
+  const [sheetsConnected, setSheetsConnected] = useState(null);
+  const [exporting, setExporting] = useState(false);
+  const [exportMsg, setExportMsg] = useState(null);
+
+  const doExport = async () => {
+    setExporting(true);
+    setExportMsg(null);
+    try {
+      const res = await base44.functions.invoke("exportInquiriesToSheet", { inquiry_ids: [...checked] });
+      const data = res.data;
+      setSheetsConnected(true);
+      setExportMsg({
+        type: "success",
+        text: `Exported ${data.appended} ${data.appended === 1 ? "inquiry" : "inquiries"} to Google Sheet.`,
+        url: data.spreadsheet_url,
+      });
+    } catch (err) {
+      const msg = err.response?.data?.error || err.message || "Export failed";
+      if (msg === "not_connected") {
+        setSheetsConnected(false);
+        setExportMsg({ type: "error", text: "Connect your Google account to enable Sheet export." });
+      } else {
+        setExportMsg({ type: "error", text: msg });
+      }
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const handleConnect = async () => {
+    try {
+      const url = await base44.connectors.connectAppUser("6a8b26af88276f2ae373e42b");
+      const popup = window.open(url, "_blank");
+      const timer = setInterval(() => {
+        if (!popup || popup.closed) {
+          clearInterval(timer);
+          setSheetsConnected(null);
+          doExport();
+        }
+      }, 500);
+    } catch (err) {
+      setExportMsg({ type: "error", text: err.message || "Could not start Google connection" });
+    }
+  };
+
+  const handleExport = () => {
+    if (sheetsConnected === false) { handleConnect(); return; }
+    doExport();
+  };
+
   const SortIcon = ({ field }) => {
     if (sortField !== field) return <ArrowUpDown className="w-3.5 h-3.5 opacity-40" />;
     return sortDir === "asc" ? <ArrowUp className="w-3.5 h-3.5" /> : <ArrowDown className="w-3.5 h-3.5" />;
@@ -222,6 +272,10 @@ export default function Dashboard() {
                   {STATUSES.slice(1).map(s => <SelectItem key={s} value={s} className="text-zinc-200 focus:bg-zinc-800">{s}</SelectItem>)}
                 </SelectContent>
               </Select>
+              <Button variant="outline" size="sm" onClick={handleExport} disabled={exporting} className="bg-zinc-900 border-zinc-800 text-zinc-200 hover:bg-zinc-800 hover:text-white">
+                {exporting ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <Sheet className="w-3.5 h-3.5 mr-1.5" />}
+                {sheetsConnected === false ? "Connect Google Sheets" : "Export to Sheet"}
+              </Button>
               <Button variant="outline" size="sm" onClick={bulkDelete} className="bg-zinc-900 border-rose-800/60 text-rose-300 hover:bg-rose-900/40 hover:text-rose-200">
                 <Trash2 className="w-3.5 h-3.5 mr-1.5" /> Delete
               </Button>
@@ -229,6 +283,12 @@ export default function Dashboard() {
                 Clear
               </Button>
             </div>
+            {exportMsg && (
+              <div className={`w-full text-xs ${exportMsg.type === "error" ? "text-rose-400" : "text-emerald-400"}`}>
+                {exportMsg.text}
+                {exportMsg.url && <a href={exportMsg.url} target="_blank" rel="noreferrer" className="ml-2 underline inline-flex items-center gap-1">Open sheet<ExternalLink className="w-3 h-3" /></a>}
+              </div>
+            )}
           </div>
         )}
 
