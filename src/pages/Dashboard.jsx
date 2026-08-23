@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Loader2, ArrowUp, ArrowDown, ArrowUpDown, RefreshCw, UtensilsCrossed, Inbox, LayoutGrid, CalendarDays, List, Trash2 } from "lucide-react";
+import { Loader2, ArrowUp, ArrowDown, ArrowUpDown, RefreshCw, UtensilsCrossed, Inbox, LayoutGrid, CalendarDays, List, Trash2, LayoutDashboard } from "lucide-react";
 import { Link } from "react-router-dom";
 import CalendarView from "@/components/CalendarView";
+import KanbanView from "@/components/KanbanView";
 import { StatusBadge } from "@/components/StatusBadge";
 import InquiryDetail from "@/components/InquiryDetail";
 
@@ -153,6 +154,12 @@ export default function Dashboard() {
               >
                 <CalendarDays className="w-3.5 h-3.5" /> Calendar
               </button>
+              <button
+                onClick={() => setView("board")}
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium transition ${view === "board" ? "bg-zinc-800 text-white" : "text-zinc-400 hover:text-zinc-200"}`}
+              >
+                <LayoutDashboard className="w-3.5 h-3.5" /> Board
+              </button>
             </div>
             <Link to="/requests">
               <Button variant="outline" size="sm" className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white">
@@ -223,6 +230,14 @@ export default function Dashboard() {
 
         {view === "calendar" ? (
           <CalendarView inquiries={inquiries} onSelect={setSelected} />
+        ) : view === "board" ? (
+          loading ? (
+            <div className="flex items-center justify-center py-24 text-zinc-500">
+              <Loader2 className="w-6 h-6 animate-spin" />
+            </div>
+          ) : (
+            <KanbanView inquiries={inquiries} onUpdated={handleUpdated} onSelect={setSelected} />
+          )
         ) : (
         <>
         {loading ? (
