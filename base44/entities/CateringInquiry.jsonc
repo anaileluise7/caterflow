@@ -70,6 +70,14 @@
     "proposal": {
       "type": "string",
       "title": "Generated Proposal"
+    },
+    "equipment": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "title": "Equipment Checklist"
     }
   },
   "required": [

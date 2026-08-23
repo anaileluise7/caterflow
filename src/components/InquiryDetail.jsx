@@ -11,6 +11,7 @@ import ReactMarkdown from "react-markdown";
 import { StatusBadge } from "@/components/StatusBadge";
 import ActivityLog from "@/components/ActivityLog";
 import EmailComposer from "@/components/EmailComposer";
+import EquipmentChecklist from "@/components/EquipmentChecklist";
 import { PIPELINE_STATUSES } from "@/lib/pipeline";
 
 const STATUSES = PIPELINE_STATUSES;
@@ -161,6 +162,9 @@ export default function InquiryDetail({ inquiry, onClose, onUpdated }) {
               <Field icon={StickyNote} label="Additional Notes" value={inquiry.additional_notes} />
             </div>
           </div>
+
+          {/* Equipment checklist */}
+          <EquipmentChecklist inquiry={inquiry} onUpdated={onUpdated} />
 
           {/* Proposal */}
           <div>
