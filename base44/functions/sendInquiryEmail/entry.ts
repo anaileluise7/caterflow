@@ -9,34 +9,23 @@ export default async function(req) {
 
     const body = await req.json();
     const inquiryId = body.inquiry_id;
+    const subject = (body.subject || '').trim();
+    const messageBody = body.body || '';
     if (!inquiryId) return Response.json({ error: 'inquiry_id is required' }, { status: 400 });
+    if (!subject) return Response.json({ error: 'subject is required' }, { status: 400 });
+    if (!messageBody.trim()) return Response.json({ error: 'body is required' }, { status: 400 });
 
     const inquiry = await base44.entities.CateringInquiry.get(inquiryId);
     if (!inquiry) return Response.json({ error: 'Inquiry not found' }, { status: 404 });
-    if (!inquiry.proposal) return Response.json({ error: 'No proposal has been generated yet' }, { status: 400 });
     if (!inquiry.email) return Response.json({ error: 'This inquiry has no client email address' }, { status: 400 });
 
     const { accessToken } = await base44.asServiceRole.connectors.getConnection('gmail');
     const senderEmail = await getGmailSender(accessToken);
-
-    const subject = `Your Catering Proposal from Saffron & Sage - ${inquiry.event_type || 'Event'} on ${inquiry.event_date || ''}`;
-    const plainText =
-      `Hi ${inquiry.name || 'there'},\n\n` +
-      `Thank you for your inquiry with Saffron & Sage. Please find our proposed catering offering below.\n\n` +
-      `${inquiry.proposal}\n\n` +
-      `We would love to discuss the details and bring this to life for you. Just reply to this email or call us anytime.\n\n` +
-      `Warm regards,\nThe Saffron & Sage Events Team`;
-    const htmlBody =
-      `<p>Hi ${escapeHtml(inquiry.name || 'there')},</p>` +
-      `<p>Thank you for your inquiry with Saffron &amp; Sage. Please find our proposed catering offering below.</p>` +
-      `<div style="white-space: pre-wrap; font-family: -apple-system, Segoe UI, Roboto, sans-serif; line-height: 1.6;">${escapeHtml(inquiry.proposal)}</div>` +
-      `<p>We would love to discuss the details and bring this to life for you. Just reply to this email or call us anytime.</p>` +
-      `<p>Warm regards,<br/>The Saffron &amp; Sage Events Team</p>`;
-
+    const htmlBody = `<div style="white-space: pre-wrap; font-family: -apple-system, Segoe UI, Roboto, sans-serif; line-height: 1.6;">${escapeHtml(messageBody)}</div>`;
     const messageId = await sendGmail(accessToken, {
       to: inquiry.email,
       subject,
-      plainText,
+      plainText: messageBody,
       htmlBody,
       senderName: 'Saffron & Sage',
       senderEmail,

@@ -10,6 +10,7 @@ import { downloadInvoicePdf, printInvoicePdf } from "@/lib/invoicePdf";
 import ReactMarkdown from "react-markdown";
 import { StatusBadge } from "@/components/StatusBadge";
 import ActivityLog from "@/components/ActivityLog";
+import EmailComposer from "@/components/EmailComposer";
 import { PIPELINE_STATUSES } from "@/lib/pipeline";
 
 const STATUSES = PIPELINE_STATUSES;
@@ -217,6 +218,9 @@ export default function InquiryDetail({ inquiry, onClose, onUpdated }) {
               </div>
             )}
           </div>
+
+          {/* Reply with template */}
+          <EmailComposer inquiry={inquiry} />
 
           {/* Invoice */}
           <div>

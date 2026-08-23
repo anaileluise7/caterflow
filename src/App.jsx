@@ -10,6 +10,7 @@ import ScrollToTop from './components/ScrollToTop';
 import InquiryForm from './pages/InquiryForm';
 import Dashboard from './pages/Dashboard';
 import Requests from './pages/Requests';
+import Templates from './pages/Templates';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -41,6 +42,7 @@ const AuthenticatedApp = () => {
       <Route path="/" element={<InquiryForm />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/requests" element={<Requests />} />
+      <Route path="/templates" element={<Templates />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

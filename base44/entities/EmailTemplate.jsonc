@@ -1,0 +1,37 @@
+{
+  "name": "EmailTemplate",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Template Name"
+    },
+    "subject": {
+      "type": "string",
+      "title": "Subject"
+    },
+    "body": {
+      "type": "string",
+      "title": "Body"
+    },
+    "event_type": {
+      "type": "string",
+      "enum": [
+        "General",
+        "Wedding",
+        "Corporate",
+        "Birthday",
+        "Private Dinner",
+        "Cocktail Reception",
+        "Other"
+      ],
+      "default": "General",
+      "title": "Event Type"
+    }
+  },
+  "required": [
+    "name",
+    "subject",
+    "body"
+  ]
+}
