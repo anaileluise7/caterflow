@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Loader2, ArrowUp, ArrowDown, ArrowUpDown, RefreshCw, UtensilsCrossed, Inbox, LayoutGrid, CalendarDays, List, Trash2, LayoutDashboard, Sheet, ExternalLink, Mail } from "lucide-react";
+import { Loader2, ArrowUp, ArrowDown, ArrowUpDown, RefreshCw, UtensilsCrossed, Inbox, LayoutGrid, CalendarDays, List, Trash2, LayoutDashboard, Sheet, ExternalLink, Mail, LineChart } from "lucide-react";
 import { Link } from "react-router-dom";
 import CalendarView from "@/components/CalendarView";
 import KanbanView from "@/components/KanbanView";
@@ -216,6 +216,11 @@ export default function Dashboard() {
                 <LayoutDashboard className="w-3.5 h-3.5" /> Board
               </button>
             </div>
+            <Link to="/finance">
+              <Button variant="outline" size="sm" className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white">
+                <LineChart className="w-3.5 h-3.5 mr-1.5" /> Finance
+              </Button>
+            </Link>
             <Link to="/templates">
               <Button variant="outline" size="sm" className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white">
                 <Mail className="w-3.5 h-3.5 mr-1.5" /> Templates

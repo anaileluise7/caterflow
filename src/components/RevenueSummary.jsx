@@ -1,35 +1,7 @@
 import React, { useMemo } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { TrendingUp, CalendarClock, Users } from "lucide-react";
-
-function parseBudget(b) {
-  if (!b) return 0;
-  const m = String(b).match(/(\d+(\.\d+)?)/);
-  return m ? parseFloat(m[1]) : 0;
-}
-
-function fmtMoney(n) {
-  return new Intl.NumberFormat("en-GB", { style: "currency", currency: "GBP", maximumFractionDigits: 0 }).format(n || 0);
-}
-
-function asDate(d) {
-  if (!d) return null;
-  const dt = new Date(d);
-  if (isNaN(dt)) return null;
-  dt.setHours(0, 0, 0, 0);
-  return dt;
-}
-
-function monthKey(d) {
-  const dt = new Date(d);
-  return `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}`;
-}
-
-function monthLabel(key) {
-  const [y, m] = key.split("-");
-  const dt = new Date(Number(y), Number(m) - 1, 1);
-  return dt.toLocaleDateString("en-GB", { month: "short", year: "numeric" });
-}
+import { parseBudget, fmtMoney, asDate, monthKey, monthLabel } from "@/lib/finance";
 
 export default function RevenueSummary({ inquiries }) {
   const { next30Total, next30Events, next30Guests, byMonth } = useMemo(() => {
