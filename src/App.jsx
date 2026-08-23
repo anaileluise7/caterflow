@@ -9,6 +9,7 @@ import ScrollToTop from './components/ScrollToTop';
 // Add page imports here
 import InquiryForm from './pages/InquiryForm';
 import Dashboard from './pages/Dashboard';
+import Requests from './pages/Requests';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -39,6 +40,7 @@ const AuthenticatedApp = () => {
       {/* Add your page Route elements here */}
       <Route path="/" element={<InquiryForm />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/requests" element={<Requests />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
