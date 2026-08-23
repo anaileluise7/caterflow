@@ -14,6 +14,7 @@ import InquiryDetail from "@/components/InquiryDetail";
 import { PIPELINE_STATUSES } from "@/lib/pipeline";
 
 const STATUSES = ["All", ...PIPELINE_STATUSES];
+const EVENT_TYPES = ["All", "Wedding", "Corporate", "Birthday", "Private Dinner", "Cocktail Reception", "Other"];
 const SORTABLE = ["event_date", "status"];
 
 function fmtDate(d) {
@@ -29,6 +30,7 @@ export default function Dashboard() {
   const [inquiries, setInquiries] = useState([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("All");
+  const [eventTypeFilter, setEventTypeFilter] = useState("All");
   const [sortField, setSortField] = useState("event_date");
   const [sortDir, setSortDir] = useState("asc");
   const [selected, setSelected] = useState(null);
@@ -66,6 +68,7 @@ export default function Dashboard() {
   const filtered = useMemo(() => {
     let list = inquiries;
     if (statusFilter !== "All") list = list.filter(i => i.status === statusFilter);
+    if (eventTypeFilter !== "All") list = list.filter(i => i.event_type === eventTypeFilter);
     return [...list].sort((a, b) => {
       const av = a[sortField], bv = b[sortField];
       if (av == null && bv == null) return 0;
@@ -257,6 +260,14 @@ export default function Dashboard() {
               </SelectTrigger>
               <SelectContent className="bg-zinc-900 border-zinc-800">
                 {STATUSES.map(s => <SelectItem key={s} value={s} className="text-zinc-200 focus:bg-zinc-800">{s}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <Select value={eventTypeFilter} onValueChange={setEventTypeFilter}>
+              <SelectTrigger className="w-[170px] bg-zinc-900 border-zinc-800 text-zinc-200">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-zinc-900 border-zinc-800">
+                {EVENT_TYPES.map(t => <SelectItem key={t} value={t} className="text-zinc-200 focus:bg-zinc-800">{t}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>
