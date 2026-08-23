@@ -52,6 +52,19 @@
       "type": "string",
       "title": "Additional Notes"
     },
+    "lead_source": {
+      "type": "string",
+      "enum": [
+        "Instagram",
+        "Facebook",
+        "Google",
+        "Word of Mouth",
+        "Referral",
+        "Wedding Fair",
+        "Other"
+      ],
+      "title": "Lead Source"
+    },
     "status": {
       "type": "string",
       "enum": [

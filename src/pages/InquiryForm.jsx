@@ -7,11 +7,12 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Loader2, CheckCircle2, Sparkles, Calendar, Users, MapPin, Mail, Phone, PoundSterling, Utensils, StickyNote, UtensilsCrossed } from "lucide-react";
+import { Loader2, CheckCircle2, Sparkles, Calendar, Users, MapPin, Mail, Phone, PoundSterling, Utensils, StickyNote, UtensilsCrossed, Megaphone } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { Link } from "react-router-dom";
 
 const EVENT_TYPES = ["Wedding", "Corporate", "Birthday", "Private Dinner", "Cocktail Reception", "Other"];
+const LEAD_SOURCES = ["Instagram", "Facebook", "Google", "Word of Mouth", "Referral", "Wedding Fair", "Other"];
 
 function FormField({ icon: Icon, label, children, required }) {
   return (
@@ -29,6 +30,7 @@ export default function InquiryForm() {
   const [form, setForm] = useState({
     name: "", email: "", phone: "", event_date: "", event_type: "",
     guest_count: "", venue: "", budget_per_head: "", dietary_requirements: "", additional_notes: "",
+    lead_source: "",
   });
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState(null);
@@ -46,6 +48,7 @@ export default function InquiryForm() {
         guest_count: Number(form.guest_count) || 0,
         status: "New Inquiry",
       };
+      if (!payload.lead_source) delete payload.lead_source;
       const created = await base44.entities.CateringInquiry.create(payload);
       const res = await base44.functions.invoke("generateProposal", payload);
       const updated = await base44.entities.CateringInquiry.update(created.id, {
@@ -81,7 +84,7 @@ export default function InquiryForm() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button
               variant="outline"
-              onClick={() => { setResult(null); setForm({ name: "", email: "", phone: "", event_date: "", event_type: "", guest_count: "", venue: "", budget_per_head: "", dietary_requirements: "", additional_notes: "" }); }}
+              onClick={() => { setResult(null); setForm({ name: "", email: "", phone: "", event_date: "", event_type: "", guest_count: "", venue: "", budget_per_head: "", dietary_requirements: "", additional_notes: "", lead_source: "" }); }}
               className="border-stone-300 text-stone-700 hover:bg-stone-100"
             >
               Submit another inquiry
@@ -143,6 +146,16 @@ export default function InquiryForm() {
             </FormField>
             <FormField icon={PoundSterling} label="Budget Per Head">
               <Input value={form.budget_per_head} onChange={e => update("budget_per_head", e.target.value)} placeholder="£45–£60" className="bg-stone-50 border-stone-200 focus:border-amber-400" />
+            </FormField>
+            <FormField icon={Megaphone} label="How did you hear about us?">
+              <Select value={form.lead_source} onValueChange={v => update("lead_source", v)}>
+                <SelectTrigger className="bg-stone-50 border-stone-200 focus:border-amber-400">
+                  <SelectValue placeholder="Select source" />
+                </SelectTrigger>
+                <SelectContent>
+                  {LEAD_SOURCES.map(s => <SelectItem key={s} value={s}>{s}</SelectItem>)}
+                </SelectContent>
+              </Select>
             </FormField>
           </div>
 

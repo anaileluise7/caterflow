@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { X, Loader2, RefreshCw, Calendar, Users, MapPin, Mail, Phone, PoundSterling, Utensils, StickyNote, Check, Download, Printer } from "lucide-react";
+import { X, Loader2, RefreshCw, Calendar, Users, MapPin, Mail, Phone, PoundSterling, Utensils, StickyNote, Check, Download, Printer, Megaphone } from "lucide-react";
 import { downloadProposalPdf } from "@/lib/proposalPdf";
 import ReactMarkdown from "react-markdown";
 import { StatusBadge } from "@/components/StatusBadge";
@@ -130,6 +130,7 @@ export default function InquiryDetail({ inquiry, onClose, onUpdated }) {
               <Field icon={PoundSterling} label="Budget / Head" value={inquiry.budget_per_head} />
               <Field icon={Mail} label="Email" value={inquiry.email} />
               <Field icon={Phone} label="Phone" value={inquiry.phone} />
+              <Field icon={Megaphone} label="Lead Source" value={inquiry.lead_source} />
             </div>
             <div className="mt-5 space-y-5">
               <Field icon={Utensils} label="Dietary Requirements" value={inquiry.dietary_requirements} />

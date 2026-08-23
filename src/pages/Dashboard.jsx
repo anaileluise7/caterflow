@@ -15,6 +15,7 @@ import { PIPELINE_STATUSES } from "@/lib/pipeline";
 
 const STATUSES = ["All", ...PIPELINE_STATUSES];
 const EVENT_TYPES = ["All", "Wedding", "Corporate", "Birthday", "Private Dinner", "Cocktail Reception", "Other"];
+const LEAD_SOURCES = ["All", "Instagram", "Facebook", "Google", "Word of Mouth", "Referral", "Wedding Fair", "Other"];
 const SORTABLE = ["event_date", "status"];
 
 function fmtDate(d) {
@@ -31,6 +32,7 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState("All");
   const [eventTypeFilter, setEventTypeFilter] = useState("All");
+  const [leadSourceFilter, setLeadSourceFilter] = useState("All");
   const [sortField, setSortField] = useState("event_date");
   const [sortDir, setSortDir] = useState("asc");
   const [selected, setSelected] = useState(null);
@@ -69,6 +71,7 @@ export default function Dashboard() {
     let list = inquiries;
     if (statusFilter !== "All") list = list.filter(i => i.status === statusFilter);
     if (eventTypeFilter !== "All") list = list.filter(i => i.event_type === eventTypeFilter);
+    if (leadSourceFilter !== "All") list = list.filter(i => i.lead_source === leadSourceFilter);
     return [...list].sort((a, b) => {
       const av = a[sortField], bv = b[sortField];
       if (av == null && bv == null) return 0;
@@ -78,7 +81,7 @@ export default function Dashboard() {
         ? String(av).localeCompare(String(bv))
         : String(bv).localeCompare(String(av));
     });
-  }, [inquiries, statusFilter, sortField, sortDir]);
+  }, [inquiries, statusFilter, eventTypeFilter, leadSourceFilter, sortField, sortDir]);
 
   const counts = useMemo(() => {
     const c = { All: inquiries.length };
@@ -280,6 +283,14 @@ export default function Dashboard() {
                 {EVENT_TYPES.map(t => <SelectItem key={t} value={t} className="text-zinc-200 focus:bg-zinc-800">{t}</SelectItem>)}
               </SelectContent>
             </Select>
+            <Select value={leadSourceFilter} onValueChange={setLeadSourceFilter}>
+              <SelectTrigger className="w-[170px] bg-zinc-900 border-zinc-800 text-zinc-200">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-zinc-900 border-zinc-800">
+                {LEAD_SOURCES.map(s => <SelectItem key={s} value={s} className="text-zinc-200 focus:bg-zinc-800">{s}</SelectItem>)}
+              </SelectContent>
+            </Select>
           </div>
           <div className="text-sm text-zinc-500">{filtered.length} {filtered.length === 1 ? "inquiry" : "inquiries"}</div>
         </div>
@@ -356,6 +367,7 @@ export default function Dashboard() {
                       </button>
                     </th>
                     <th className="text-left font-medium px-4 py-3">Event Type</th>
+                    <th className="text-left font-medium px-4 py-3">Source</th>
                     <th className="text-left font-medium px-4 py-3">Guests</th>
                     <th className="text-left font-medium px-4 py-3">
                       <button className="inline-flex items-center gap-1.5 hover:text-zinc-300" onClick={() => toggleSort("status")}>
@@ -377,6 +389,7 @@ export default function Dashboard() {
                       <td className="px-4 py-3 font-medium text-zinc-100">{i.name}</td>
                       <td className="px-4 py-3 text-zinc-300">{fmtDate(i.event_date)}</td>
                       <td className="px-4 py-3 text-zinc-300">{i.event_type}</td>
+                      <td className="px-4 py-3 text-zinc-300">{i.lead_source || "—"}</td>
                       <td className="px-4 py-3 text-zinc-300">{i.guest_count}</td>
                       <td className="px-4 py-3"><StatusBadge status={i.status} /></td>
                     </tr>
@@ -399,6 +412,8 @@ export default function Dashboard() {
                       <span>{fmtDate(i.event_date)}</span>
                       <span>·</span>
                       <span>{i.event_type}</span>
+                      <span>·</span>
+                      <span>{i.lead_source || "Unknown source"}</span>
                       <span>·</span>
                       <span>{i.guest_count} guests</span>
                     </div>
