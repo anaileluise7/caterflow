@@ -1,0 +1,36 @@
+{
+  "name": "EmailMessage",
+  "type": "object",
+  "properties": {
+    "inquiry_id": {
+      "type": "string",
+      "title": "Inquiry ID"
+    },
+    "recipient": {
+      "type": "string",
+      "title": "Recipient"
+    },
+    "subject": {
+      "type": "string",
+      "title": "Subject"
+    },
+    "body": {
+      "type": "string",
+      "title": "Body"
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "Proposal",
+        "Message"
+      ],
+      "default": "Message",
+      "title": "Kind"
+    }
+  },
+  "required": [
+    "inquiry_id",
+    "subject",
+    "body"
+  ]
+}

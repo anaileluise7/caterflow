@@ -16,6 +16,7 @@ import PaymentTracker from "@/components/PaymentTracker";
 import InvoicePanel from "@/components/InvoicePanel";
 import FollowUpReminder from "@/components/FollowUpReminder";
 import FeedbackSection from "@/components/FeedbackSection";
+import EmailThread from "@/components/EmailThread";
 import { PIPELINE_STATUSES } from "@/lib/pipeline";
 
 const STATUSES = PIPELINE_STATUSES;
@@ -211,6 +212,9 @@ export default function InquiryDetail({ inquiry, onClose, onUpdated }) {
 
           {/* Reply with template */}
           <EmailComposer inquiry={inquiry} />
+
+          {/* Email history */}
+          <EmailThread inquiry={inquiry} />
 
           {/* Invoice */}
           <InvoicePanel inquiry={inquiry} />

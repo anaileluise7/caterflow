@@ -30,6 +30,17 @@ export default async function(req) {
       senderName: 'Saffron & Sage',
       senderEmail,
     });
+    try {
+      await base44.entities.EmailMessage.create({
+        inquiry_id: inquiryId,
+        recipient: inquiry.email,
+        subject,
+        body: messageBody,
+        kind: 'Message',
+      });
+    } catch (logErr) {
+      console.error('Failed to log email message:', logErr.message);
+    }
     return Response.json({ success: true, messageId, sent_to: inquiry.email });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
