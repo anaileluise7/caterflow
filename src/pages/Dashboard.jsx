@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Loader2, ArrowUp, ArrowDown, ArrowUpDown, RefreshCw, UtensilsCrossed, Inbox, LayoutGrid, CalendarDays, List } from "lucide-react";
+import { Loader2, ArrowUp, ArrowDown, ArrowUpDown, RefreshCw, UtensilsCrossed, Inbox, LayoutGrid, CalendarDays, List, Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import CalendarView from "@/components/CalendarView";
 import { StatusBadge } from "@/components/StatusBadge";
@@ -30,6 +30,7 @@ export default function Dashboard() {
   const [sortDir, setSortDir] = useState("asc");
   const [selected, setSelected] = useState(null);
   const [view, setView] = useState("list");
+  const [checked, setChecked] = useState(new Set());
 
   const load = async () => {
     setLoading(true);
@@ -82,6 +83,41 @@ export default function Dashboard() {
   const handleUpdated = (updated) => {
     setInquiries(list => list.map(i => i.id === updated.id ? updated : i));
     setSelected(updated);
+  };
+
+  const allChecked = filtered.length > 0 && filtered.every(i => checked.has(i.id));
+  const toggleCheck = (id) => {
+    setChecked(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+  const toggleAll = () => {
+    setChecked(prev => {
+      const next = new Set(prev);
+      if (filtered.every(i => next.has(i.id))) {
+        filtered.forEach(i => next.delete(i.id));
+      } else {
+        filtered.forEach(i => next.add(i.id));
+      }
+      return next;
+    });
+  };
+  const bulkUpdateStatus = async (newStatus) => {
+    try {
+      await base44.entities.CateringInquiry.bulkUpdate([...checked].map(id => ({ id, status: newStatus })));
+      setChecked(new Set());
+      load();
+    } catch (err) { console.error(err); }
+  };
+  const bulkDelete = async () => {
+    if (!window.confirm(`Delete ${checked.size} selected inquiries? This cannot be undone.`)) return;
+    try {
+      await base44.entities.CateringInquiry.deleteMany({ id: { $in: [...checked] } });
+      setChecked(new Set());
+      load();
+    } catch (err) { console.error(err); }
   };
 
   const SortIcon = ({ field }) => {
@@ -162,6 +198,29 @@ export default function Dashboard() {
         </div>
         )}
 
+        {view === "list" && checked.size > 0 && (
+          <div className="flex flex-wrap items-center gap-3 mb-4 rounded-xl border border-amber-500/40 bg-amber-500/10 p-3">
+            <span className="text-sm font-medium text-amber-200">{checked.size} selected</span>
+            <div className="flex flex-wrap items-center gap-2 ml-auto">
+              <span className="text-xs text-zinc-400">Set status:</span>
+              <Select value="" onValueChange={bulkUpdateStatus}>
+                <SelectTrigger className="w-[170px] bg-zinc-900 border-zinc-800 text-zinc-200">
+                  <SelectValue placeholder="Choose status" />
+                </SelectTrigger>
+                <SelectContent className="bg-zinc-900 border-zinc-800">
+                  {STATUSES.slice(1).map(s => <SelectItem key={s} value={s} className="text-zinc-200 focus:bg-zinc-800">{s}</SelectItem>)}
+                </SelectContent>
+              </Select>
+              <Button variant="outline" size="sm" onClick={bulkDelete} className="bg-zinc-900 border-rose-800/60 text-rose-300 hover:bg-rose-900/40 hover:text-rose-200">
+                <Trash2 className="w-3.5 h-3.5 mr-1.5" /> Delete
+              </Button>
+              <Button variant="ghost" size="sm" onClick={() => setChecked(new Set())} className="text-zinc-400 hover:text-white hover:bg-zinc-800">
+                Clear
+              </Button>
+            </div>
+          </div>
+        )}
+
         {view === "calendar" ? (
           <CalendarView inquiries={inquiries} onSelect={setSelected} />
         ) : (
@@ -182,6 +241,9 @@ export default function Dashboard() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="bg-zinc-900 text-zinc-500 text-xs uppercase tracking-wide">
+                    <th className="w-10 px-4 py-3">
+                      <input type="checkbox" checked={allChecked} onChange={toggleAll} className="w-4 h-4 rounded accent-amber-500 cursor-pointer" />
+                    </th>
                     <th className="text-left font-medium px-4 py-3">Name</th>
                     <th className="text-left font-medium px-4 py-3">
                       <button className="inline-flex items-center gap-1.5 hover:text-zinc-300" onClick={() => toggleSort("event_date")}>
@@ -204,6 +266,9 @@ export default function Dashboard() {
                       onClick={() => setSelected(i)}
                       className="border-t border-zinc-800 hover:bg-zinc-900 cursor-pointer transition"
                     >
+                      <td className="px-4 py-3" onClick={e => e.stopPropagation()}>
+                        <input type="checkbox" checked={checked.has(i.id)} onChange={() => toggleCheck(i.id)} className="w-4 h-4 rounded accent-amber-500 cursor-pointer" />
+                      </td>
                       <td className="px-4 py-3 font-medium text-zinc-100">{i.name}</td>
                       <td className="px-4 py-3 text-zinc-300">{fmtDate(i.event_date)}</td>
                       <td className="px-4 py-3 text-zinc-300">{i.event_type}</td>
@@ -218,23 +283,22 @@ export default function Dashboard() {
             {/* Mobile cards */}
             <div className="md:hidden space-y-3">
               {filtered.map(i => (
-                <button
-                  key={i.id}
-                  onClick={() => setSelected(i)}
-                  className="block w-full text-left rounded-xl border border-zinc-800 bg-zinc-900 p-4 hover:border-zinc-700 transition"
-                >
-                  <div className="flex items-center justify-between gap-2 mb-2">
-                    <span className="font-medium text-zinc-100">{i.name}</span>
-                    <StatusBadge status={i.status} />
-                  </div>
-                  <div className="text-sm text-zinc-400 flex flex-wrap gap-x-3 gap-y-1">
-                    <span>{fmtDate(i.event_date)}</span>
-                    <span>·</span>
-                    <span>{i.event_type}</span>
-                    <span>·</span>
-                    <span>{i.guest_count} guests</span>
-                  </div>
-                </button>
+                <div key={i.id} className="flex items-start gap-3 rounded-xl border border-zinc-800 bg-zinc-900 p-4 hover:border-zinc-700 transition">
+                  <input type="checkbox" checked={checked.has(i.id)} onChange={() => toggleCheck(i.id)} className="w-4 h-4 mt-0.5 rounded accent-amber-500 cursor-pointer shrink-0" />
+                  <button onClick={() => setSelected(i)} className="block flex-1 text-left">
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                      <span className="font-medium text-zinc-100">{i.name}</span>
+                      <StatusBadge status={i.status} />
+                    </div>
+                    <div className="text-sm text-zinc-400 flex flex-wrap gap-x-3 gap-y-1">
+                      <span>{fmtDate(i.event_date)}</span>
+                      <span>·</span>
+                      <span>{i.event_type}</span>
+                      <span>·</span>
+                      <span>{i.guest_count} guests</span>
+                    </div>
+                  </button>
+                </div>
               ))}
             </div>
           </>
