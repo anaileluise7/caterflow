@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Loader2, ArrowUp, ArrowDown, ArrowUpDown, RefreshCw, UtensilsCrossed, Inbox, LayoutGrid, CalendarDays, List, Trash2, LayoutDashboard, Sheet, ExternalLink, Mail, LineChart, FileText } from "lucide-react";
+import { Loader2, ArrowUp, ArrowDown, ArrowUpDown, RefreshCw, UtensilsCrossed, Inbox, LayoutGrid, CalendarDays, List, Trash2, LayoutDashboard, Sheet, ExternalLink, Mail, LineChart, FileText, BellRing } from "lucide-react";
 import { Link } from "react-router-dom";
 import CalendarView from "@/components/CalendarView";
 import KanbanView from "@/components/KanbanView";
@@ -25,6 +25,13 @@ function fmtDate(d) {
   } catch {
     return d;
   }
+}
+
+function isFollowUpDue(i) {
+  if (!i.follow_up_date) return false;
+  if (["Completed", "Declined"].includes(i.status)) return false;
+  const todayStr = new Date().toLocaleDateString("en-CA");
+  return i.follow_up_date <= todayStr;
 }
 
 export default function Dashboard() {
@@ -386,7 +393,14 @@ export default function Dashboard() {
                       <td className="px-4 py-3" onClick={e => e.stopPropagation()}>
                         <input type="checkbox" checked={checked.has(i.id)} onChange={() => toggleCheck(i.id)} className="w-4 h-4 rounded accent-amber-500 cursor-pointer" />
                       </td>
-                      <td className="px-4 py-3 font-medium text-zinc-100">{i.name}</td>
+                      <td className="px-4 py-3 font-medium text-zinc-100">
+                        <span className="inline-flex items-center gap-1.5">
+                          {i.name}
+                          {isFollowUpDue(i) && (
+                            <BellRing className="w-3.5 h-3.5 text-amber-400" title={`Follow-up due ${i.follow_up_date}`} />
+                          )}
+                        </span>
+                      </td>
                       <td className="px-4 py-3 text-zinc-300">{fmtDate(i.event_date)}</td>
                       <td className="px-4 py-3 text-zinc-300">{i.event_type}</td>
                       <td className="px-4 py-3 text-zinc-300">{i.lead_source || "—"}</td>
@@ -405,7 +419,12 @@ export default function Dashboard() {
                   <input type="checkbox" checked={checked.has(i.id)} onChange={() => toggleCheck(i.id)} className="w-4 h-4 mt-0.5 rounded accent-amber-500 cursor-pointer shrink-0" />
                   <button onClick={() => setSelected(i)} className="block flex-1 text-left">
                     <div className="flex items-center justify-between gap-2 mb-2">
-                      <span className="font-medium text-zinc-100">{i.name}</span>
+                      <span className="font-medium text-zinc-100 inline-flex items-center gap-1.5">
+                        {i.name}
+                        {isFollowUpDue(i) && (
+                          <BellRing className="w-3.5 h-3.5 text-amber-400" title={`Follow-up due ${i.follow_up_date}`} />
+                        )}
+                      </span>
                       <StatusBadge status={i.status} />
                     </div>
                     <div className="text-sm text-zinc-400 flex flex-wrap gap-x-3 gap-y-1">

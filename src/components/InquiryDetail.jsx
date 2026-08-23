@@ -14,6 +14,7 @@ import EquipmentChecklist from "@/components/EquipmentChecklist";
 import TaskList from "@/components/TaskList";
 import PaymentTracker from "@/components/PaymentTracker";
 import InvoicePanel from "@/components/InvoicePanel";
+import FollowUpReminder from "@/components/FollowUpReminder";
 import { PIPELINE_STATUSES } from "@/lib/pipeline";
 
 const STATUSES = PIPELINE_STATUSES;
@@ -137,6 +138,9 @@ export default function InquiryDetail({ inquiry, onClose, onUpdated }) {
               <Field icon={StickyNote} label="Additional Notes" value={inquiry.additional_notes} />
             </div>
           </div>
+
+          {/* Follow-up reminder */}
+          <FollowUpReminder inquiry={inquiry} onUpdated={onUpdated} />
 
           {/* Equipment checklist */}
           <EquipmentChecklist inquiry={inquiry} onUpdated={onUpdated} />

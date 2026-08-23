@@ -65,6 +65,11 @@
       ],
       "title": "Lead Source"
     },
+    "follow_up_date": {
+      "type": "string",
+      "format": "date",
+      "title": "Follow-up Date"
+    },
     "status": {
       "type": "string",
       "enum": [
