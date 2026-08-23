@@ -176,6 +176,8 @@ export default function Dashboard() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+        <RevenueSummary inquiries={inquiries} />
+
         {/* Stats */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
           {STATUSES.map(s => (
@@ -189,8 +191,6 @@ export default function Dashboard() {
             </button>
           ))}
         </div>
-
-        <RevenueSummary inquiries={inquiries} />
 
         {view === "list" && (
         <div className="flex items-center justify-between gap-4 mb-4">
