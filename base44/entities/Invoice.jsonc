@@ -1,0 +1,98 @@
+{
+  "name": "Invoice",
+  "type": "object",
+  "properties": {
+    "invoice_number": {
+      "type": "string",
+      "title": "Invoice Number"
+    },
+    "inquiry_id": {
+      "type": "string",
+      "title": "Inquiry ID"
+    },
+    "client_name": {
+      "type": "string",
+      "title": "Client Name"
+    },
+    "event_date": {
+      "type": "string",
+      "format": "date",
+      "title": "Event Date"
+    },
+    "line_items": {
+      "type": "array",
+      "title": "Line Items",
+      "items": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "unit_price": {
+            "type": "number"
+          },
+          "amount": {
+            "type": "number"
+          }
+        }
+      },
+      "default": []
+    },
+    "subtotal": {
+      "type": "number",
+      "title": "Subtotal"
+    },
+    "tax_rate": {
+      "type": "number",
+      "title": "Tax Rate"
+    },
+    "tax_amount": {
+      "type": "number",
+      "title": "Tax Amount"
+    },
+    "deposit": {
+      "type": "number",
+      "title": "Deposit"
+    },
+    "balance": {
+      "type": "number",
+      "title": "Balance"
+    },
+    "total": {
+      "type": "number",
+      "title": "Total"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "Draft",
+        "Sent",
+        "Paid"
+      ],
+      "default": "Draft",
+      "title": "Status"
+    },
+    "issued_date": {
+      "type": "string",
+      "format": "date",
+      "title": "Issued Date"
+    },
+    "payment_terms": {
+      "type": "string",
+      "title": "Payment Terms"
+    },
+    "notes": {
+      "type": "string",
+      "title": "Notes"
+    }
+  },
+  "required": [
+    "invoice_number",
+    "inquiry_id",
+    "client_name",
+    "status"
+  ]
+}

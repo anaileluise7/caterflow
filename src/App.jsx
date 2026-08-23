@@ -12,6 +12,7 @@ import Dashboard from './pages/Dashboard';
 import Requests from './pages/Requests';
 import Templates from './pages/Templates';
 import Finance from './pages/Finance';
+import Invoices from './pages/Invoices';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -45,6 +46,7 @@ const AuthenticatedApp = () => {
       <Route path="/requests" element={<Requests />} />
       <Route path="/templates" element={<Templates />} />
       <Route path="/finance" element={<Finance />} />
+      <Route path="/invoices" element={<Invoices />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

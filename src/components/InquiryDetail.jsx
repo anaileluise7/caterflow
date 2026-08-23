@@ -6,7 +6,6 @@ import {
 } from "@/components/ui/select";
 import { X, Loader2, RefreshCw, Calendar, Users, MapPin, Mail, Phone, PoundSterling, Utensils, StickyNote, Check, Download, Printer } from "lucide-react";
 import { downloadProposalPdf } from "@/lib/proposalPdf";
-import { downloadInvoicePdf, printInvoicePdf } from "@/lib/invoicePdf";
 import ReactMarkdown from "react-markdown";
 import { StatusBadge } from "@/components/StatusBadge";
 import ActivityLog from "@/components/ActivityLog";
@@ -14,6 +13,7 @@ import EmailComposer from "@/components/EmailComposer";
 import EquipmentChecklist from "@/components/EquipmentChecklist";
 import TaskList from "@/components/TaskList";
 import PaymentTracker from "@/components/PaymentTracker";
+import InvoicePanel from "@/components/InvoicePanel";
 import { PIPELINE_STATUSES } from "@/lib/pipeline";
 
 const STATUSES = PIPELINE_STATUSES;
@@ -83,34 +83,6 @@ export default function InquiryDetail({ inquiry, onClose, onUpdated }) {
     } finally {
       setRegenerating(false);
     }
-  };
-
-  const [invoiceCache, setInvoiceCache] = useState({ id: null, data: null });
-  const [invoicing, setInvoicing] = useState(false);
-  const [invoiceError, setInvoiceError] = useState("");
-
-  const ensureInvoice = async () => {
-    if (invoiceCache.id === inquiry.id && invoiceCache.data) return invoiceCache.data;
-    setInvoicing(true);
-    setInvoiceError("");
-    try {
-      const res = await base44.functions.invoke("generateInvoice", { inquiry_id: inquiry.id });
-      setInvoiceCache({ id: inquiry.id, data: res.data.invoice });
-      return res.data.invoice;
-    } catch (err) {
-      setInvoiceError(err.response?.data?.error || err.message || "Could not generate invoice");
-      throw err;
-    } finally {
-      setInvoicing(false);
-    }
-  };
-
-  const downloadInvoice = async () => {
-    try { const data = await ensureInvoice(); downloadInvoicePdf(inquiry, data); } catch {}
-  };
-
-  const printInvoice = async () => {
-    try { const data = await ensureInvoice(); printInvoicePdf(inquiry, data); } catch {}
   };
 
   return (
@@ -232,23 +204,7 @@ export default function InquiryDetail({ inquiry, onClose, onUpdated }) {
           <EmailComposer inquiry={inquiry} />
 
           {/* Invoice */}
-          <div>
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-3">Invoice</h3>
-            <div className="flex flex-wrap gap-2">
-              <Button variant="outline" size="sm" onClick={downloadInvoice} disabled={invoicing || !inquiry.proposal}
-                className="bg-zinc-800 border-zinc-700 text-zinc-200 hover:bg-zinc-700 hover:text-white">
-                {invoicing ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <Download className="w-3.5 h-3.5 mr-1.5" />}
-                Download
-              </Button>
-              <Button variant="outline" size="sm" onClick={printInvoice} disabled={invoicing || !inquiry.proposal}
-                className="bg-zinc-800 border-zinc-700 text-zinc-200 hover:bg-zinc-700 hover:text-white">
-                {invoicing ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <Printer className="w-3.5 h-3.5 mr-1.5" />}
-                Print
-              </Button>
-            </div>
-            {invoiceError && <div className="text-sm text-rose-400 mt-2">{invoiceError}</div>}
-            {!inquiry.proposal && <p className="text-xs text-zinc-500 mt-2">Generate a proposal first to create an invoice.</p>}
-          </div>
+          <InvoicePanel inquiry={inquiry} />
 
           {/* Payment tracking */}
           <PaymentTracker inquiry={inquiry} onUpdated={onUpdated} />
