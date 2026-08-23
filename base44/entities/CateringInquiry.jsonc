@@ -55,13 +55,16 @@
     "status": {
       "type": "string",
       "enum": [
-        "New",
+        "New Inquiry",
         "Quoted",
         "Tasting Booked",
         "Confirmed",
+        "Invoiced",
+        "Paid",
+        "Completed",
         "Declined"
       ],
-      "default": "New",
+      "default": "New Inquiry",
       "title": "Status"
     },
     "proposal": {

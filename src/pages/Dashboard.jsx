@@ -11,8 +11,9 @@ import KanbanView from "@/components/KanbanView";
 import RevenueSummary from "@/components/RevenueSummary";
 import { StatusBadge } from "@/components/StatusBadge";
 import InquiryDetail from "@/components/InquiryDetail";
+import { PIPELINE_STATUSES } from "@/lib/pipeline";
 
-const STATUSES = ["All", "New", "Quoted", "Tasting Booked", "Confirmed", "Declined"];
+const STATUSES = ["All", ...PIPELINE_STATUSES];
 const SORTABLE = ["event_date", "status"];
 
 function fmtDate(d) {

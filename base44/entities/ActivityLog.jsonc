@@ -1,0 +1,30 @@
+{
+  "name": "ActivityLog",
+  "type": "object",
+  "properties": {
+    "inquiry_id": {
+      "type": "string",
+      "title": "Inquiry ID"
+    },
+    "entry_type": {
+      "type": "string",
+      "enum": [
+        "Call",
+        "Email",
+        "Tasting",
+        "Note"
+      ],
+      "default": "Note",
+      "title": "Entry Type"
+    },
+    "content": {
+      "type": "string",
+      "title": "Content"
+    }
+  },
+  "required": [
+    "inquiry_id",
+    "entry_type",
+    "content"
+  ]
+}

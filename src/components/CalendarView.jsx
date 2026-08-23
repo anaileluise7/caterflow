@@ -7,10 +7,13 @@ import {
 } from "date-fns";
 
 const STATUS_DOT = {
-  "New": "bg-blue-500",
+  "New Inquiry": "bg-blue-500",
   "Quoted": "bg-amber-500",
   "Tasting Booked": "bg-purple-500",
   "Confirmed": "bg-emerald-500",
+  "Invoiced": "bg-cyan-500",
+  "Paid": "bg-teal-500",
+  "Completed": "bg-slate-500",
   "Declined": "bg-rose-500",
 };
 

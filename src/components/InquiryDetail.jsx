@@ -8,8 +8,10 @@ import { X, Loader2, RefreshCw, Calendar, Users, MapPin, Mail, Phone, PoundSterl
 import { downloadProposalPdf } from "@/lib/proposalPdf";
 import ReactMarkdown from "react-markdown";
 import { StatusBadge } from "@/components/StatusBadge";
+import ActivityLog from "@/components/ActivityLog";
+import { PIPELINE_STATUSES } from "@/lib/pipeline";
 
-const STATUSES = ["New", "Quoted", "Tasting Booked", "Confirmed", "Declined"];
+const STATUSES = PIPELINE_STATUSES;
 
 function Field({ icon: Icon, label, value }) {
   return (
@@ -186,6 +188,9 @@ export default function InquiryDetail({ inquiry, onClose, onUpdated }) {
               </div>
             )}
           </div>
+
+          {/* Activity log */}
+          <ActivityLog inquiryId={inquiry.id} />
         </div>
       </div>
     </div>

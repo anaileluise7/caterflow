@@ -44,7 +44,7 @@ export default function InquiryForm() {
       const payload = {
         ...form,
         guest_count: Number(form.guest_count) || 0,
-        status: "New",
+        status: "New Inquiry",
       };
       const created = await base44.entities.CateringInquiry.create(payload);
       const res = await base44.functions.invoke("generateProposal", payload);

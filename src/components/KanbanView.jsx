@@ -2,14 +2,18 @@ import React from "react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { base44 } from "@/api/base44Client";
 import { Users, Calendar, UtensilsCrossed } from "lucide-react";
+import { PIPELINE_STATUSES } from "@/lib/pipeline";
 
-const COLUMNS = ["New", "Quoted", "Tasting Booked", "Confirmed", "Declined"];
+const COLUMNS = PIPELINE_STATUSES;
 
 const COLUMN_ACCENT = {
-  "New": "border-t-blue-500",
+  "New Inquiry": "border-t-blue-500",
   "Quoted": "border-t-amber-500",
   "Tasting Booked": "border-t-purple-500",
   "Confirmed": "border-t-emerald-500",
+  "Invoiced": "border-t-cyan-500",
+  "Paid": "border-t-teal-500",
+  "Completed": "border-t-slate-500",
   "Declined": "border-t-rose-500",
 };
 

@@ -8,9 +8,10 @@ import {
 import { Loader2, Search, RefreshCw, UtensilsCrossed, Inbox, Calendar, Users, X, CheckCircle2, XCircle } from "lucide-react";
 import { StatusBadge } from "@/components/StatusBadge";
 import InquiryDetail from "@/components/InquiryDetail";
+import { PIPELINE_STATUSES } from "@/lib/pipeline";
 import { Link } from "react-router-dom";
 
-const STATUSES = ["All", "New", "Quoted", "Tasting Booked", "Confirmed", "Declined"];
+const STATUSES = ["All", ...PIPELINE_STATUSES];
 
 function fmtDate(d) {
   if (!d) return "—";
