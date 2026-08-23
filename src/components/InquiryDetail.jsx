@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { X, Loader2, RefreshCw, Calendar, Users, MapPin, Mail, Phone, PoundSterling, Utensils, StickyNote } from "lucide-react";
+import { X, Loader2, RefreshCw, Calendar, Users, MapPin, Mail, Phone, PoundSterling, Utensils, StickyNote, Check } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { StatusBadge } from "@/components/StatusBadge";
 
@@ -25,7 +25,24 @@ function Field({ icon: Icon, label, value }) {
 export default function InquiryDetail({ inquiry, onClose, onUpdated }) {
   const [status, setStatus] = useState(inquiry.status);
   const [regenerating, setRegenerating] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
+
+  const sendEmail = async () => {
+    setSending(true);
+    setSent(false);
+    setError("");
+    try {
+      await base44.functions.invoke("sendProposalEmail", { inquiry_id: inquiry.id });
+      setSent(true);
+      setTimeout(() => setSent(false), 4000);
+    } catch (err) {
+      setError(err.response?.data?.error || err.message || "Could not send email");
+    } finally {
+      setSending(false);
+    }
+  };
 
   const saveStatus = async (newStatus) => {
     setStatus(newStatus);
@@ -114,18 +131,31 @@ export default function InquiryDetail({ inquiry, onClose, onUpdated }) {
 
           {/* Proposal */}
           <div>
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
               <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Generated Proposal</h3>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={regenerate}
-                disabled={regenerating}
-                className="bg-zinc-800 border-zinc-700 text-zinc-200 hover:bg-zinc-700 hover:text-white"
-              >
-                {regenerating ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5 mr-1.5" />}
-                Regenerate
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={sendEmail}
+                  disabled={sending || regenerating || !inquiry.proposal || !inquiry.email}
+                  title={!inquiry.email ? "No client email on file" : !inquiry.proposal ? "No proposal to send" : "Email proposal to the client"}
+                  className="bg-zinc-800 border-zinc-700 text-zinc-200 hover:bg-zinc-700 hover:text-white"
+                >
+                  {sending ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : sent ? <Check className="w-3.5 h-3.5 mr-1.5 text-emerald-400" /> : <Mail className="w-3.5 h-3.5 mr-1.5" />}
+                  {sent ? "Sent" : "Email to client"}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={regenerate}
+                  disabled={regenerating}
+                  className="bg-zinc-800 border-zinc-700 text-zinc-200 hover:bg-zinc-700 hover:text-white"
+                >
+                  {regenerating ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5 mr-1.5" />}
+                  Regenerate
+                </Button>
+              </div>
             </div>
             {error && (
               <div className="text-sm text-rose-400 mb-3">{error}</div>
