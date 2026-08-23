@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Loader2, Search, RefreshCw, UtensilsCrossed, Inbox, Calendar, Users, X, CheckCircle2, XCircle } from "lucide-react";
+import { Loader2, Search, RefreshCw, UtensilsCrossed, Inbox, Calendar, Users, X, CheckCircle2, XCircle, BellRing } from "lucide-react";
 import { StatusBadge } from "@/components/StatusBadge";
 import InquiryDetail from "@/components/InquiryDetail";
 import { PIPELINE_STATUSES } from "@/lib/pipeline";
@@ -121,6 +121,11 @@ export default function Requests() {
             <Link to="/staff">
               <Button variant="outline" size="sm" className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white">
                 <Users className="w-3.5 h-3.5 mr-1.5" /> Staff
+              </Button>
+            </Link>
+            <Link to="/reminders">
+              <Button variant="outline" size="sm" className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white">
+                <BellRing className="w-3.5 h-3.5 mr-1.5" /> Reminders
               </Button>
             </Link>
             <Button variant="outline" size="sm" onClick={load} className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white">

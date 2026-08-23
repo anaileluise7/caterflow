@@ -14,6 +14,7 @@ import Templates from './pages/Templates';
 import Finance from './pages/Finance';
 import Invoices from './pages/Invoices';
 import Staff from './pages/Staff';
+import Reminders from './pages/Reminders';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -49,6 +50,7 @@ const AuthenticatedApp = () => {
       <Route path="/finance" element={<Finance />} />
       <Route path="/invoices" element={<Invoices />} />
       <Route path="/staff" element={<Staff />} />
+      <Route path="/reminders" element={<Reminders />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
