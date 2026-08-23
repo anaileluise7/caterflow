@@ -17,6 +17,7 @@ import InvoicePanel from "@/components/InvoicePanel";
 import FollowUpReminder from "@/components/FollowUpReminder";
 import FeedbackSection from "@/components/FeedbackSection";
 import EmailThread from "@/components/EmailThread";
+import FilesSection from "@/components/FilesSection";
 import { PIPELINE_STATUSES } from "@/lib/pipeline";
 
 const STATUSES = PIPELINE_STATUSES;
@@ -149,6 +150,9 @@ export default function InquiryDetail({ inquiry, onClose, onUpdated }) {
 
           {/* Equipment checklist */}
           <EquipmentChecklist inquiry={inquiry} onUpdated={onUpdated} />
+
+          {/* Event files */}
+          <FilesSection inquiry={inquiry} onUpdated={onUpdated} />
 
           {/* Team tasks */}
           <TaskList inquiry={inquiry} />

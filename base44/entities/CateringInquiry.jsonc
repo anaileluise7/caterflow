@@ -105,6 +105,22 @@
       "default": [],
       "title": "Equipment Checklist"
     },
+    "files": {
+      "type": "array",
+      "title": "Event Files",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      },
+      "default": []
+    },
     "total_quoted": {
       "type": "number",
       "title": "Total Quoted Amount"
