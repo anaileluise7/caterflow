@@ -18,6 +18,8 @@ import FollowUpReminder from "@/components/FollowUpReminder";
 import FeedbackSection from "@/components/FeedbackSection";
 import EmailThread from "@/components/EmailThread";
 import FilesSection from "@/components/FilesSection";
+import ClientPreviewModal from "@/components/ClientPreviewModal";
+import { Eye } from "lucide-react";
 import { PIPELINE_STATUSES } from "@/lib/pipeline";
 
 const STATUSES = PIPELINE_STATUSES;
@@ -40,6 +42,7 @@ export default function InquiryDetail({ inquiry, onClose, onUpdated }) {
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
+  const [showPreview, setShowPreview] = useState(false);
 
   const sendEmail = async () => {
     setSending(true);
@@ -194,6 +197,15 @@ export default function InquiryDetail({ inquiry, onClose, onUpdated }) {
                   {regenerating ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <RefreshCw className="w-3.5 h-3.5 mr-1.5" />}
                   Regenerate
                 </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowPreview(true)}
+                  className="bg-zinc-800 border-zinc-700 text-zinc-200 hover:bg-zinc-700 hover:text-white"
+                >
+                  <Eye className="w-3.5 h-3.5 mr-1.5" />
+                  Preview
+                </Button>
               </div>
             </div>
             {error && (
@@ -230,6 +242,10 @@ export default function InquiryDetail({ inquiry, onClose, onUpdated }) {
           <ActivityLog inquiryId={inquiry.id} />
         </div>
       </div>
+
+      {showPreview && (
+        <ClientPreviewModal inquiry={inquiry} onClose={() => setShowPreview(false)} />
+      )}
     </div>
   );
 }
