@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { X, Loader2, RefreshCw, Calendar, Users, MapPin, Mail, Phone, PoundSterling, Utensils, StickyNote, Check } from "lucide-react";
+import { X, Loader2, RefreshCw, Calendar, Users, MapPin, Mail, Phone, PoundSterling, Utensils, StickyNote, Check, Download } from "lucide-react";
+import { downloadProposalPdf } from "@/lib/proposalPdf";
 import ReactMarkdown from "react-markdown";
 import { StatusBadge } from "@/components/StatusBadge";
 
@@ -134,6 +135,17 @@ export default function InquiryDetail({ inquiry, onClose, onUpdated }) {
             <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
               <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Generated Proposal</h3>
               <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => downloadProposalPdf(inquiry)}
+                  disabled={!inquiry.proposal}
+                  title={!inquiry.proposal ? "No proposal to download" : "Download a PDF copy"}
+                  className="bg-zinc-800 border-zinc-700 text-zinc-200 hover:bg-zinc-700 hover:text-white"
+                >
+                  <Download className="w-3.5 h-3.5 mr-1.5" />
+                  PDF
+                </Button>
                 <Button
                   variant="outline"
                   size="sm"
