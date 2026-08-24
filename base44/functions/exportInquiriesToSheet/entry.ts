@@ -15,6 +15,7 @@ export default async function(req) {
 
     const body = await req.json().catch(() => ({}));
     const inquiryIds = Array.isArray(body.inquiry_ids) ? body.inquiry_ids.filter(Boolean) : [];
+    const exportAll = body.export_all === true;
     const providedSheetId = body.spreadsheet_id || undefined;
 
     let connection;
@@ -63,8 +64,13 @@ export default async function(req) {
     const firstSheet = meta.sheets && meta.sheets[0] ? meta.sheets[0].properties.title : "Sheet1";
 
     let appended = 0;
-    if (inquiryIds.length > 0) {
-      const inquiries = await base44.entities.CateringInquiry.filter({ id: { $in: inquiryIds } });
+    let inquiries = [];
+    if (exportAll) {
+      inquiries = await base44.entities.CateringInquiry.list("-created_date", 1000);
+    } else if (inquiryIds.length > 0) {
+      inquiries = await base44.entities.CateringInquiry.filter({ id: { $in: inquiryIds } });
+    }
+    if (inquiries.length > 0) {
       const rows = inquiries.map(i => [
         i.name || "",
         i.email || "",

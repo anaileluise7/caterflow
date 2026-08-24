@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
 import {
@@ -141,12 +141,14 @@ export default function Dashboard() {
   const [sheetsConnected, setSheetsConnected] = useState(null);
   const [exporting, setExporting] = useState(false);
   const [exportMsg, setExportMsg] = useState(null);
+  const pendingExport = useRef(null);
 
-  const doExport = async () => {
+  const doExport = async (opts = {}) => {
     setExporting(true);
     setExportMsg(null);
     try {
-      const res = await base44.functions.invoke("exportInquiriesToSheet", { inquiry_ids: [...checked] });
+      const payload = opts.all ? { export_all: true } : { inquiry_ids: [...checked] };
+      const res = await base44.functions.invoke("exportInquiriesToSheet", payload);
       const data = res.data;
       setSheetsConnected(true);
       setExportMsg({
@@ -175,7 +177,8 @@ export default function Dashboard() {
         if (!popup || popup.closed) {
           clearInterval(timer);
           setSheetsConnected(null);
-          doExport();
+          doExport(pendingExport.current || {});
+          pendingExport.current = null;
         }
       }, 500);
     } catch (err) {
@@ -183,9 +186,9 @@ export default function Dashboard() {
     }
   };
 
-  const handleExport = () => {
-    if (sheetsConnected === false) { handleConnect(); return; }
-    doExport();
+  const handleExport = (opts = {}) => {
+    if (sheetsConnected === false) { pendingExport.current = opts; handleConnect(); return; }
+    doExport(opts);
   };
 
   const SortIcon = ({ field }) => {
@@ -319,7 +322,13 @@ export default function Dashboard() {
               </SelectContent>
             </Select>
           </div>
-          <div className="text-sm text-zinc-500">{filtered.length} {filtered.length === 1 ? "inquiry" : "inquiries"}</div>
+          <div className="flex items-center gap-3">
+            <Button variant="outline" size="sm" onClick={() => handleExport({ all: true })} disabled={exporting} className="bg-zinc-900 border-zinc-800 text-zinc-200 hover:bg-zinc-800 hover:text-white">
+              {exporting ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : <Sheet className="w-3.5 h-3.5 mr-1.5" />}
+              Export all to Sheet
+            </Button>
+            <span className="text-sm text-zinc-500">{filtered.length} {filtered.length === 1 ? "inquiry" : "inquiries"}</span>
+          </div>
         </div>
         )}
 
