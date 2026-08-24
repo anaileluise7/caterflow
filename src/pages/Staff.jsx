@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Loader2, Plus, Pencil, Trash2, RefreshCw, Users, Mail, Phone, Briefcase, UtensilsCrossed, ListTodo, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
+import StaffCalendar from "@/components/StaffCalendar";
 
 const STATUSES = ["Active", "On Leave", "Inactive"];
 const STATUS_STYLES = {
@@ -124,6 +125,7 @@ export default function Staff() {
             <div className="flex rounded-lg border border-zinc-800 bg-zinc-900 p-0.5">
               <button onClick={() => setView("directory")} className={`px-2.5 py-1 rounded-md text-xs font-medium transition ${view === "directory" ? "bg-zinc-800 text-white" : "text-zinc-400 hover:text-zinc-200"}`}>Directory</button>
               <button onClick={() => setView("tasks")} className={`px-2.5 py-1 rounded-md text-xs font-medium transition ${view === "tasks" ? "bg-zinc-800 text-white" : "text-zinc-400 hover:text-zinc-200"}`}>Tasks</button>
+              <button onClick={() => setView("calendar")} className={`px-2.5 py-1 rounded-md text-xs font-medium transition ${view === "calendar" ? "bg-zinc-800 text-white" : "text-zinc-400 hover:text-zinc-200"}`}>Calendar</button>
             </div>
             <Link to="/dashboard">
               <Button variant="outline" size="sm" className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white">Dashboard</Button>
@@ -191,6 +193,8 @@ export default function Staff() {
               );
             })}
           </div>
+        ) : view === "calendar" ? (
+          <StaffCalendar staff={staff} tasks={tasks} inquiries={inquiries} />
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {staff.map(m => (
