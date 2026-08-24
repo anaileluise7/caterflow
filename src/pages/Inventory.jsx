@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Loader2, Plus, Pencil, Trash2, RefreshCw, Package, Minus, AlertTriangle, Boxes } from "lucide-react";
 import { Link } from "react-router-dom";
+import InventoryReservations from "@/components/InventoryReservations";
 
 const CATEGORIES = ["Furniture", "Glassware", "Tableware", "Linen", "Kitchen Equipment", "Other"];
 const EMPTY = { name: "", category: "Furniture", total_quantity: 0, available_quantity: 0, unit: "pcs", low_stock_threshold: 0, notes: "" };
@@ -31,6 +32,7 @@ export default function Inventory() {
   const [form, setForm] = useState(EMPTY);
   const [saving, setSaving] = useState(false);
   const [filter, setFilter] = useState("All");
+  const [view, setView] = useState("stock");
 
   const load = async () => {
     setLoading(true);
@@ -107,6 +109,10 @@ export default function Inventory() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <div className="flex rounded-lg border border-zinc-800 bg-zinc-900 p-0.5">
+              <button onClick={() => setView("stock")} className={`px-2.5 py-1 rounded-md text-xs font-medium transition ${view === "stock" ? "bg-zinc-800 text-white" : "text-zinc-400 hover:text-zinc-200"}`}>Stock</button>
+              <button onClick={() => setView("reservations")} className={`px-2.5 py-1 rounded-md text-xs font-medium transition ${view === "reservations" ? "bg-zinc-800 text-white" : "text-zinc-400 hover:text-zinc-200"}`}>Reservations</button>
+            </div>
             <Link to="/dashboard">
               <Button variant="outline" size="sm" className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white">Dashboard</Button>
             </Link>
@@ -121,6 +127,10 @@ export default function Inventory() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+        {view === "reservations" ? (
+          <InventoryReservations inventory={items} />
+        ) : (
+        <>
         <div className="grid grid-cols-3 gap-3 mb-6">
           <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
             <div className="text-xs text-zinc-500">Items tracked</div>
@@ -193,6 +203,8 @@ export default function Inventory() {
               );
             })}
           </div>
+        )}
+        </>
         )}
       </main>
 
