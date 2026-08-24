@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { X, Loader2, RefreshCw, Calendar, Users, MapPin, Mail, Phone, PoundSterling, Utensils, StickyNote, Check, Download, Printer, Megaphone } from "lucide-react";
+import { X, Loader2, RefreshCw, Calendar, Users, MapPin, Mail, Phone, PoundSterling, Utensils, StickyNote, Check, Download, Printer, Megaphone, Link2 } from "lucide-react";
 import { downloadProposalPdf } from "@/lib/proposalPdf";
 import ReactMarkdown from "react-markdown";
 import { StatusBadge } from "@/components/StatusBadge";
@@ -43,6 +43,29 @@ export default function InquiryDetail({ inquiry, onClose, onUpdated }) {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
   const [showPreview, setShowPreview] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [generatingLink, setGeneratingLink] = useState(false);
+
+  const handleShare = async () => {
+    setGeneratingLink(true);
+    setError("");
+    try {
+      let token = inquiry.share_token;
+      if (!token) {
+        token = (crypto.randomUUID && crypto.randomUUID()) || (Math.random().toString(36).slice(2) + Date.now().toString(36));
+        const updated = await base44.entities.CateringInquiry.update(inquiry.id, { share_token: token });
+        onUpdated(updated);
+      }
+      const url = `${window.location.origin}/proposal/${token}`;
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 3000);
+    } catch (err) {
+      setError(err.message || "Could not copy link");
+    } finally {
+      setGeneratingLink(false);
+    }
+  };
 
   const sendEmail = async () => {
     setSending(true);
@@ -205,6 +228,17 @@ export default function InquiryDetail({ inquiry, onClose, onUpdated }) {
                 >
                   <Eye className="w-3.5 h-3.5 mr-1.5" />
                   Preview
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleShare}
+                  disabled={generatingLink}
+                  title="Copy a read-only link to share with the client"
+                  className="bg-zinc-800 border-zinc-700 text-zinc-200 hover:bg-zinc-700 hover:text-white"
+                >
+                  {generatingLink ? <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" /> : copied ? <Check className="w-3.5 h-3.5 mr-1.5 text-emerald-400" /> : <Link2 className="w-3.5 h-3.5 mr-1.5" />}
+                  {copied ? "Link copied" : "Copy share link"}
                 </Button>
               </div>
             </div>

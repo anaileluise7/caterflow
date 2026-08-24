@@ -97,6 +97,10 @@
       "type": "string",
       "title": "Generated Proposal"
     },
+    "share_token": {
+      "type": "string",
+      "title": "Share Token"
+    },
     "equipment": {
       "type": "array",
       "items": {

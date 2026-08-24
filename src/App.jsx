@@ -16,6 +16,7 @@ import Invoices from './pages/Invoices';
 import Staff from './pages/Staff';
 import Reminders from './pages/Reminders';
 import Inventory from './pages/Inventory';
+import ProposalView from './pages/ProposalView';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -45,6 +46,7 @@ const AuthenticatedApp = () => {
     <Routes>
       {/* Add your page Route elements here */}
       <Route path="/" element={<InquiryForm />} />
+      <Route path="/proposal/:token" element={<ProposalView />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/requests" element={<Requests />} />
       <Route path="/templates" element={<Templates />} />
