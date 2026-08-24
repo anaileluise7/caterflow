@@ -1,0 +1,49 @@
+{
+  "name": "Inventory",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Item Name"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Furniture",
+        "Glassware",
+        "Tableware",
+        "Linen",
+        "Kitchen Equipment",
+        "Other"
+      ],
+      "default": "Furniture",
+      "title": "Category"
+    },
+    "total_quantity": {
+      "type": "number",
+      "title": "Total Quantity"
+    },
+    "available_quantity": {
+      "type": "number",
+      "title": "Available Quantity"
+    },
+    "unit": {
+      "type": "string",
+      "title": "Unit",
+      "default": "pcs"
+    },
+    "low_stock_threshold": {
+      "type": "number",
+      "title": "Low Stock Threshold",
+      "default": 0
+    },
+    "notes": {
+      "type": "string",
+      "title": "Notes"
+    }
+  },
+  "required": [
+    "name",
+    "total_quantity"
+  ]
+}

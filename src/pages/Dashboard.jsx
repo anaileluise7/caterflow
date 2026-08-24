@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Loader2, ArrowUp, ArrowDown, ArrowUpDown, RefreshCw, UtensilsCrossed, Inbox, LayoutGrid, CalendarDays, List, Trash2, LayoutDashboard, Sheet, ExternalLink, Mail, LineChart, FileText, BellRing, Users, CloudSun } from "lucide-react";
+import { Loader2, ArrowUp, ArrowDown, ArrowUpDown, RefreshCw, UtensilsCrossed, Inbox, LayoutGrid, CalendarDays, List, Trash2, LayoutDashboard, Sheet, ExternalLink, Mail, LineChart, FileText, BellRing, Users, CloudSun, Boxes } from "lucide-react";
 import { Link } from "react-router-dom";
 import CalendarView from "@/components/CalendarView";
 import KanbanView from "@/components/KanbanView";
@@ -251,6 +251,11 @@ export default function Dashboard() {
             <Link to="/staff">
               <Button variant="outline" size="sm" className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white">
                 <Users className="w-3.5 h-3.5 mr-1.5" /> Staff
+              </Button>
+            </Link>
+            <Link to="/inventory">
+              <Button variant="outline" size="sm" className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white">
+                <Boxes className="w-3.5 h-3.5 mr-1.5" /> Inventory
               </Button>
             </Link>
             <Link to="/reminders">

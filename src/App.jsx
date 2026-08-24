@@ -15,6 +15,7 @@ import Finance from './pages/Finance';
 import Invoices from './pages/Invoices';
 import Staff from './pages/Staff';
 import Reminders from './pages/Reminders';
+import Inventory from './pages/Inventory';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -51,6 +52,7 @@ const AuthenticatedApp = () => {
       <Route path="/invoices" element={<Invoices />} />
       <Route path="/staff" element={<Staff />} />
       <Route path="/reminders" element={<Reminders />} />
+      <Route path="/inventory" element={<Inventory />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
