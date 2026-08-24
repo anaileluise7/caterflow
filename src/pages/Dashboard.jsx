@@ -4,13 +4,14 @@ import { Button } from "@/components/ui/button";
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select";
-import { Loader2, ArrowUp, ArrowDown, ArrowUpDown, RefreshCw, UtensilsCrossed, Inbox, LayoutGrid, CalendarDays, List, Trash2, LayoutDashboard, Sheet, ExternalLink, Mail, LineChart, FileText, BellRing, Users } from "lucide-react";
+import { Loader2, ArrowUp, ArrowDown, ArrowUpDown, RefreshCw, UtensilsCrossed, Inbox, LayoutGrid, CalendarDays, List, Trash2, LayoutDashboard, Sheet, ExternalLink, Mail, LineChart, FileText, BellRing, Users, CloudSun } from "lucide-react";
 import { Link } from "react-router-dom";
 import CalendarView from "@/components/CalendarView";
 import KanbanView from "@/components/KanbanView";
 import RevenueSummary from "@/components/RevenueSummary";
 import { StatusBadge } from "@/components/StatusBadge";
 import InquiryDetail from "@/components/InquiryDetail";
+import WeatherLookup from "@/components/WeatherLookup";
 import { PIPELINE_STATUSES } from "@/lib/pipeline";
 
 const STATUSES = ["All", ...PIPELINE_STATUSES];
@@ -45,6 +46,7 @@ export default function Dashboard() {
   const [selected, setSelected] = useState(null);
   const [view, setView] = useState("list");
   const [checked, setChecked] = useState(new Set());
+  const [showWeather, setShowWeather] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -256,6 +258,9 @@ export default function Dashboard() {
                 <BellRing className="w-3.5 h-3.5 mr-1.5" /> Reminders
               </Button>
             </Link>
+            <Button variant="outline" size="sm" onClick={() => setShowWeather(true)} className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white">
+              <CloudSun className="w-3.5 h-3.5 mr-1.5" /> Weather
+            </Button>
             <Button variant="outline" size="sm" onClick={load} className="bg-zinc-900 border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white">
               <RefreshCw className="w-3.5 h-3.5" />
             </Button>
@@ -462,6 +467,10 @@ export default function Dashboard() {
           onClose={() => setSelected(null)}
           onUpdated={handleUpdated}
         />
+      )}
+
+      {showWeather && (
+        <WeatherLookup onClose={() => setShowWeather(false)} />
       )}
     </div>
   );
